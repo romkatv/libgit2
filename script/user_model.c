@@ -34,11 +34,6 @@ int git_vector_insert(git_vector *v, void *element)
 	return 0;
 }
 
-int git_buf_len(const struct git_buf *buf)
-{
-	return strlen(buf->ptr);
-}
-
 int git_buf_vprintf(git_buf *buf, const char *format, va_list ap)
 {
     char ch, *s;
