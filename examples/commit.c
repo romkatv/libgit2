@@ -26,7 +26,7 @@
  * This does have:
  *
  * - Example of performing a git commit with a comment
- * 
+ *
  */
 int lg2_commit(git_repository *repo, int argc, char **argv)
 {
@@ -36,10 +36,10 @@ int lg2_commit(git_repository *repo, int argc, char **argv)
 
 	git_oid commit_oid,tree_oid;
 	git_tree *tree;
-	git_index *index;	
+	git_index *index;
 	git_object *parent = NULL;
 	git_reference *ref = NULL;
-	git_signature *signature;	
+	git_signature *author_signature, *committer_signature;
 
 	/* Validate args */
 	if (argc < 3 || strcmp(opt, "-m") != 0) {
@@ -62,23 +62,27 @@ int lg2_commit(git_repository *repo, int argc, char **argv)
 	check_lg2(git_index_write(index), "Could not write index", NULL);;
 
 	check_lg2(git_tree_lookup(&tree, repo, &tree_oid), "Error looking up tree", NULL);
-	
-	check_lg2(git_signature_default(&signature, repo), "Error creating signature", NULL);
-	
+
+	check_lg2(git_signature_default_from_env(&author_signature, &committer_signature, repo),
+			"Error creating signature", NULL);
+
 	check_lg2(git_commit_create_v(
 		&commit_oid,
 		repo,
 		"HEAD",
-		signature,
-		signature,
+		author_signature,
+		committer_signature,
 		NULL,
 		comment,
 		tree,
 		parent ? 1 : 0, parent), "Error creating commit", NULL);
 
 	git_index_free(index);
-	git_signature_free(signature);
-	git_tree_free(tree);	
+	git_signature_free(author_signature);
+	git_signature_free(committer_signature);
+	git_tree_free(tree);
+	git_object_free(parent);
+	git_reference_free(ref);
 
 	return error;
 }

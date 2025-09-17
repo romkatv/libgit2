@@ -42,10 +42,49 @@
 }
 
 {
+	ignore-openssl-init-leak
+	Memcheck:Leak
+	...
+	fun:git_openssl_stream_global_init
+	...
+}
+
+{
+	ignore-openssl-legacy-init-leak
+	Memcheck:Leak
+	...
+	fun:OPENSSL_init_ssl__legacy
+	...
+}
+
+{
+	ignore-openssl-malloc-leak
+	Memcheck:Leak
+	...
+	fun:git_openssl_malloc
+	...
+}
+
+{
+	ignore-openssl-realloc-leak
+	Memcheck:Leak
+	...
+	fun:git_openssl_realloc
+	...
+}
+
+{
 	ignore-glibc-getaddrinfo-cache
 	Memcheck:Leak
 	...
 	fun:__check_pf
+}
+
+{
+	ignore-glibc-getaddrinfo-fn
+	Memcheck:Leak
+	...
+	fun:getaddrinfo
 }
 
 {
@@ -61,6 +100,22 @@
 	...
 	fun:gcry_control
 	fun:libssh2_init
+	...
+}
+
+{
+	ignore-libssh2-session-create
+	Memcheck:Leak
+	...
+	fun:_git_ssh_session_create
+	...
+}
+
+{
+	ignore-libssh2-setup-conn
+	Memcheck:Leak
+	...
+	fun:_git_ssh_setup_conn
 	...
 }
 
@@ -144,6 +199,16 @@
 }
 
 {
+	ignore-openssl-undefined-in-connect
+	Memcheck:Cond
+	...
+	obj:*libcrypto.so*
+	...
+	fun:openssl_connect
+	...
+}
+
+{
 	ignore-libssh2-rsa-sha1-sign
 	Memcheck:Leak
 	...
@@ -176,5 +241,21 @@
 	Memcheck:Value8
 	...
 	obj:*libcrypto.so*
+	...
+}
+
+{
+	ignore-dlopen-leak
+	Memcheck:Leak
+	...
+	fun:dlopen
+	...
+}
+
+{
+	ignore-dlopen-leak
+	Memcheck:Leak
+	...
+	fun:_dlerror_run
 	...
 }

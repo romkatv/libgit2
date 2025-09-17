@@ -188,7 +188,7 @@ static void action_delete_tag(tag_state *state)
 	git_object_free(obj);
 }
 
-static void action_create_lighweight_tag(tag_state *state)
+static void action_create_lightweight_tag(tag_state *state)
 {
 	git_repository *repo = state->repo;
 	struct tag_options *opts = state->opts;
@@ -226,7 +226,7 @@ static void action_create_tag(tag_state *state)
 	check_lg2(git_revparse_single(&target, repo, opts->target),
 			"Unable to resolve spec", opts->target);
 
-	check_lg2(git_signature_default(&tagger, repo),
+	check_lg2(git_signature_default_from_env(&tagger, NULL, repo),
 			"Unable to create signature", NULL);
 
 	check_lg2(git_tag_create(&oid, repo, opts->tag_name,
@@ -260,7 +260,7 @@ static void parse_options(tag_action *action, struct tag_options *opts, int argc
 				print_usage();
 
 			if (*action != &action_create_tag)
-				*action = &action_create_lighweight_tag;
+				*action = &action_create_lightweight_tag;
 		} else if (!strcmp(curr, "-n")) {
 			opts->num_lines = 1;
 			*action = &action_list_tags;
