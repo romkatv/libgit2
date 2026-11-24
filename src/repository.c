@@ -1388,14 +1388,16 @@ static int check_valid_extension(const git_config_entry *entry, void *payload)
 	/*
 	 * !!! WARNING !!!
 	 *
-	 * Accepting preciousobjects is only safe within the context of gitstatusd because
-	 * it never modifies the repository.
+	 * Accepting preciousobjects and worktreeconfig is only safe within the context of
+	 * gitstatusd because it never modifies the repository. config.worktree is still
+	 * ignored, so settings that live only there have no effect.
 	 * 
 	 * !!! DO NOT UPSTREAM !!!
 	 * 
 	 */
 	if (!strcmp(entry->name, "extensions.noop") ||
-	    !strcmp(entry->name, "extensions.preciousobjects"))
+	    !strcmp(entry->name, "extensions.preciousobjects") ||
+	    !strcmp(entry->name, "extensions.worktreeconfig"))
 		return 0;
 
 	git_error_set(GIT_ERROR_REPOSITORY, "unsupported extension name %s", entry->name);
